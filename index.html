@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#252c36">
+  <title>FITCALORIA — дневник питания</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="logo" href="#" data-screen="diary" aria-label="FITCALORIA, главная">▤</a>
+    <nav class="desktop-nav" aria-label="Главная навигация">
+      <button class="nav-link active" data-screen="diary">Дневник</button>
+      <button class="nav-link" data-screen="foods">Продукты</button>
+      <button class="nav-link" data-screen="stats">Статистика</button>
+      <button class="nav-link" data-screen="settings">Настройки</button>
+    </nav>
+    <div class="top-actions">
+      <button class="small-button" id="settingsShortcut" data-screen="settings" aria-label="Настройки">⚙</button>
+      <button class="small-button" id="themeButton" aria-label="Сменить тему">☼</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <p class="muted">МЕНЮ</p>
+      <button class="side-link active" data-screen="diary">▤ <span>Дневник питания</span></button>
+      <button class="side-link" data-screen="foods">＋ <span>Продукты</span></button>
+      <button class="side-link" data-screen="stats">▥ <span>Статистика</span></button>
+      <button class="side-link" data-screen="settings">⚙ <span>Настройки</span></button>
+    </aside>
+
+    <main class="content">
+      <section class="screen" id="screen-diary">
+        <div class="page-heading"><div><p class="eyebrow">ТВОЙ ДЕНЬ</p><h1>Дневник питания</h1><p class="muted">Следи за питанием без лишних сложностей.</p></div><button class="button primary" id="resetDay">Очистить день</button></div>
+        <div class="summary-grid">
+          <article class="calorie-card">
+            <div class="card-top"><span>КАЛОРИИ</span><span class="pill" id="caloriePercent">0%</span></div>
+            <div class="calorie-number"><strong><span id="caloriesEaten">0</span>/<span id="caloriesGoal">2000</span></strong><span> ккал</span></div>
+            <div class="progress"><span id="calorieProgress"></span></div>
+            <div class="card-bottom"><span>Осталось на сегодня</span><strong id="caloriesLeft">2000 ккал</strong></div>
+          </article>
+          <article class="macro-card"><div class="macro-name"><span class="macro-dot protein"></span>БЕЛКИ</div><strong><span id="proteinEaten">0</span><small>/<span id="proteinGoal">120</span> г</small></strong><div class="progress"><span id="proteinProgress"></span></div></article>
+          <article class="macro-card"><div class="macro-name"><span class="macro-dot fats"></span>ЖИРЫ</div><strong><span id="fatsEaten">0</span><small>/<span id="fatsGoal">60</span> г</small></strong><div class="progress"><span id="fatsProgress"></span></div></article>
+          <article class="macro-card"><div class="macro-name"><span class="macro-dot carbs"></span>УГЛЕВОДЫ</div><strong><span id="carbsEaten">0</span><small>/<span id="carbsGoal">250</span> г</small></strong><div class="progress"><span id="carbsProgress"></span></div></article>
+        </div>
+        <div class="section-heading"><div><h2>Приёмы пищи</h2><p class="muted">Добавляй продукты по мере еды.</p></div></div>
+        <div class="meal-list" id="mealList"></div>
+        <button class="button primary full-width" id="openAddFood">＋ Добавить еду</button>
+      </section>
+
+      <section class="screen hidden" id="screen-foods">
+        <div class="page-heading"><div><p class="eyebrow">БАЗА ПРОДУКТОВ</p><h1>Добавить еду</h1><p class="muted">Найди продукт и укажи размер порции.</p></div><button class="button primary" id="openNewProduct">＋ Свой продукт</button></div>
+        <label class="search-box"><span>⌕</span><input id="foodSearch" type="search" placeholder="Поиск: курица, рис, банан…" autocomplete="off" aria-label="Поиск продуктов"></label>
+        <div class="food-results" id="foodResults"></div>
+        <button class="button secondary" data-screen="diary">← Вернуться в дневник</button>
+      </section>
+
+      <section class="screen hidden" id="screen-stats">
+        <div class="page-heading"><div><p class="eyebrow">ТВОЙ ПРОГРЕСС</p><h1>Статистика</h1><p class="muted">Изменение веса и обхвата талии.</p></div></div>
+        <div class="stat-cards">
+          <article class="stat-card"><span class="muted">Текущий вес</span><strong id="currentWeight">— кг</strong><span class="muted">Записей: <b id="weightCount">0</b></span></article>
+          <article class="stat-card"><span class="muted">Обхват талии</span><strong id="currentWaist">— см</strong><span class="muted">Записей: <b id="waistCount">0</b></span></article>
+        </div>
+        <div class="panel chart-panel">
+          <div class="chart-switch" role="group" aria-label="Выбрать показатель">
+            <button type="button" class="chart-tab active" data-chart="weight" aria-label="График веса">🏋</button>
+            <button type="button" class="chart-tab" data-chart="waist" aria-label="График обхвата талии">♙</button>
+          </div>
+          <div class="bar-chart" id="progressChart" aria-label="История измерений"></div>
+          <p class="chart-empty muted hidden" id="chartEmpty">Добавь первое измерение, чтобы увидеть график.</p>
+        </div>
+        <div class="panel">
+          <h2 id="measurementTitle">Добавить вес</h2>
+          <p class="muted small-text" id="measurementDescription">Записывай вес, чтобы отслеживать изменения.</p>
+          <form id="weightForm" class="form-row"><div><label for="newWeight">Вес, кг</label><input id="newWeight" type="number" min="20" max="350" step="0.1" placeholder="Например, 75.4" required></div><button class="button primary" type="submit">Сохранить вес</button></form>
+          <form id="waistForm" class="form-row hidden"><div><label for="newWaist">Обхват талии, см</label><input id="newWaist" type="number" min="30" max="250" step="0.1" placeholder="Например, 82.5" required></div><button class="button primary" type="submit">Сохранить обхват</button></form>
+        </div>
+        <div class="panel"><h2>История измерений</h2><div class="history-list" id="weightHistory"></div></div>
+      </section>
+
+      <section class="screen hidden" id="screen-settings">
+        <div class="page-heading"><div><p class="eyebrow">ПЕРСОНАЛИЗАЦИЯ</p><h1>Настройки</h1><p class="muted">Укажи параметры для расчёта калорий и БЖУ.</p></div></div>
+        <form id="settingsForm" class="panel settings-form">
+          <h2>Данные тела</h2>
+          <div class="form-grid">
+            <div><label for="userWeight">Вес, кг</label><input id="userWeight" type="number" min="20" max="350" step="0.1" required></div>
+            <div><label for="userHeight">Рост, см</label><input id="userHeight" type="number" min="100" max="250" required></div>
+            <div><label for="userAge">Возраст</label><input id="userAge" type="number" min="14" max="100" required></div>
+            <div><label for="userGender">Пол</label><select id="userGender"><option value="male">Мужской</option><option value="female">Женский</option></select></div>
+            <div><label for="bodyFat">Процент жира, % <span class="optional">необязательно</span></label><input id="bodyFat" type="number" min="3" max="60" step="0.1" placeholder="Например, 18"></div>
+            <div><label for="activity">Активность</label><select id="activity"><option value="1.2">Низкая</option><option value="1.375">Небольшая</option><option value="1.55">Средняя</option><option value="1.725">Высокая</option><option value="1.9">Очень высокая</option></select></div>
+          </div>
+          <h2>Цель</h2>
+          <div class="goal-options">
+            <label><input type="radio" name="goal" value="-15"><span><strong>Похудение</strong><small>−15% калорий</small></span></label>
+            <label><input type="radio" name="goal" value="0"><span><strong>Поддержание</strong><small>Без изменений</small></span></label>
+            <label><input type="radio" name="goal" value="10"><span><strong>Набор</strong><small>+10% калорий</small></span></label>
+          </div>
+          <p class="help" id="calculationInfo">Расчёт будет показан после сохранения.</p>
+          <button class="button primary full-width" type="submit">Рассчитать нормы</button>
+        </form>
+        <div class="panel"><h2>Внешний вид</h2>
+          <label class="setting-row"><span><strong>Тёмная тема</strong><small>Тёмно-серый фон и синие акценты.</small></span><input type="checkbox" id="darkMode"></label>
+          <label class="setting-row"><span><strong>Всегда показывать версию для ПК</strong><small>На телефоне интерфейс останется широким, его можно прокручивать.</small></span><input type="checkbox" id="desktopMode"></label>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <nav class="mobile-nav" aria-label="Нижняя навигация">
+    <button class="active" data-screen="diary"><span>▤</span>Дневник</button>
+    <button data-screen="foods"><span>＋</span>Продукты</button>
+    <button data-screen="stats"><span>▥</span>Статистика</button>
+    <button data-screen="settings"><span>⚙</span>Настройки</button>
+  </nav>
+
+  <dialog class="dialog" id="addFoodDialog"><form id="addFoodForm">
+    <div class="dialog-heading"><div><p class="eyebrow">ДНЕВНИК ПИТАНИЯ</p><h2 id="dialogFoodName">Продукт</h2></div><button type="button" class="close-button" data-close="addFoodDialog" aria-label="Закрыть">×</button></div>
+    <div><label for="portionWeight">Размер порции, г</label><input id="portionWeight" type="number" min="1" max="3000" value="100" required></div>
+    <div class="portion-info" id="portionInfo"></div>
+    <div class="form-grid meal-select-row"><div class="full-field"><label for="mealSelect">Приём пищи</label><select id="mealSelect"><option value="breakfast">Завтрак</option><option value="lunch">Обед</option><option value="dinner">Ужин</option><option value="snack">Перекус</option></select></div></div>
+    <button class="button primary full-width" type="submit">Добавить в дневник</button>
+  </form></dialog>
+
+  <dialog class="dialog" id="newProductDialog"><form id="newProductForm">
+    <div class="dialog-heading"><div><p class="eyebrow">МОИ ПРОДУКТЫ</p><h2>Новый продукт</h2></div><button type="button" class="close-button" data-close="newProductDialog" aria-label="Закрыть">×</button></div>
+    <div class="form-grid">
+      <div class="full-field"><label for="customName">Название</label><input id="customName" placeholder="Например, домашняя запеканка" required></div>
+      <div><label for="customCalories">Ккал на 100 г</label><input id="customCalories" type="number" min="0" max="1000" required></div>
+      <div><label for="customProtein">Белки, г</label><input id="customProtein" type="number" min="0" max="100" step="0.1" required></div>
+      <div><label for="customFats">Жиры, г</label><input id="customFats" type="number" min="0" max="100" step="0.1" required></div>
+      <div><label for="customCarbs">Углеводы, г</label><input id="customCarbs" type="number" min="0" max="100" step="0.1" required></div>
+    </div>
+    <button class="button primary full-width" type="submit">Сохранить продукт</button>
+  </form></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="js/app.js"></script>
+</body>
+</html>
